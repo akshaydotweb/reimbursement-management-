@@ -8,8 +8,12 @@ import {
 
 const expenses = ref([]);
 
+const loading = ref(true);
+
 const load = async () => {
+  loading.value = true;
   expenses.value = await getPendingExpenses();
+  loading.value = false;
 };
 
 const approve = async (id) => {
@@ -22,20 +26,34 @@ const reject = async (id) => {
   load();
 };
 
+
 onMounted(load);
 </script>
 
 <template>
+  <p v-if="loading">Loading...</p>
   <div>
     <h3>Pending Approvals</h3>
 
-    <ul>
-      <li v-for="e in expenses" :key="e.id">
-        ₹{{ e.amount }} | {{ e.category }}
+      <table border="1" cellpadding="8">
+        <thead>
+          <tr>
+            <th>Amount</th>
+            <th>Category</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
 
-        <button @click="approve(e.id)">Approve</button>
-        <button @click="reject(e.id)">Reject</button>
-      </li>
-    </ul>
+        <tbody>
+          <tr v-for="e in expenses" :key="e.id">
+            <td>₹{{ e.amount }}</td>
+            <td>{{ e.category }}</td>
+            <td>
+              <button @click="approve(e.id)">Approve</button>
+              <button @click="reject(e.id)">Reject</button>
+            </td>
+          </tr>
+        </tbody>
+    </table>
   </div>
 </template>
