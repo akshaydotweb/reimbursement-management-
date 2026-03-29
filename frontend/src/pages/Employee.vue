@@ -5,6 +5,7 @@ import ExpenseList from "../components/ExpenseList.vue";
 
 <template>
   <div>
+    <h2>Employee Dashboard</h2>
     <ExpenseForm />
     <ExpenseList />
   </div>
