@@ -1,10 +1,16 @@
 <script setup>
 import { ref } from "vue";
+import { CdrButton, CdrInput, CdrBanner, CdrHeadingSans, CdrBody } from "@rei/cedar";
 
 const email = ref("");
 const password = ref("");
+const loading = ref(false);
+const error = ref("");
 
 const login = async () => {
+  loading.value = true;
+  error.value = "";
+
   const res = await fetch("http://localhost:8000/auth/login", {
     method: "POST",
     headers: {
@@ -18,27 +24,35 @@ const login = async () => {
 
   const data = await res.json();
 
-  console.log("LOGIN RESPONSE:", data); // 👈 ADD THIS
-
   if (data.access_token) {
     localStorage.setItem("token", data.access_token);
-    alert("Login successful");
     window.location.reload();
   } else {
-    alert("Login failed");
+    error.value = "Login failed. Check your credentials.";
   }
+
+  loading.value = false;
 };
 
 
 </script>
 
 <template>
-  <div>
-    <h2>Login</h2>
+  <div class="form-stack">
+    <div>
+      <CdrHeadingSans tag="h2" scale="1">Welcome back</CdrHeadingSans>
+      <CdrBody class="muted">
+        Log in to manage reimbursements.
+      </CdrBody>
+    </div>
 
-    <input v-model="email" placeholder="Email" />
-    <input v-model="password" type="password" placeholder="Password" />
+    <CdrBanner v-if="error" type="error">{{ error }}</CdrBanner>
 
-    <button @click="login">Login</button>
+    <CdrInput v-model="email" label="Email" type="email" />
+    <CdrInput v-model="password" label="Password" type="password" />
+
+    <CdrButton :disabled="loading" @click="login">
+      {{ loading ? "Logging in..." : "Login" }}
+    </CdrButton>
   </div>
 </template>

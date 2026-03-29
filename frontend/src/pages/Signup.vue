@@ -1,12 +1,20 @@
 <script setup>
 import { ref } from "vue";
+import { CdrButton, CdrInput, CdrBanner, CdrHeadingSans, CdrBody } from "@rei/cedar";
 
 const email = ref("");
 const password = ref("");
 const company = ref("");
 const country = ref("");
+const loading = ref(false);
+const success = ref("");
+const error = ref("");
 
 const signup = async () => {
+  loading.value = true;
+  success.value = "";
+  error.value = "";
+
   const res = await fetch("http://localhost:8000/auth/signup", {
     method: "POST",
     headers: {
@@ -22,25 +30,35 @@ const signup = async () => {
 
   const data = await res.json();
 
-  console.log("SIGNUP RESPONSE:", data);
-
   if (data.msg) {
-    alert("Signup successful! Now login.");
+    success.value = "Signup successful! Please log in.";
   } else {
-    alert("Signup failed");
+    error.value = "Signup failed. Please check your details.";
   }
+
+  loading.value = false;
 };
 </script>
 
 <template>
-  <div>
-    <h2>Signup</h2>
+  <div class="form-stack">
+    <div>
+      <CdrHeadingSans tag="h2" scale="1">Create your company</CdrHeadingSans>
+      <CdrBody class="muted">
+        Set up your organization and admin account.
+      </CdrBody>
+    </div>
 
-    <input v-model="email" placeholder="Email" />
-    <input v-model="password" type="password" placeholder="Password" />
-    <input v-model="company" placeholder="Company Name" />
-    <input v-model="country" placeholder="Country (e.g. India)" />
+    <CdrBanner v-if="success" type="success">{{ success }}</CdrBanner>
+    <CdrBanner v-if="error" type="error">{{ error }}</CdrBanner>
 
-    <button @click="signup">Signup</button>
+    <CdrInput v-model="company" label="Company name" />
+    <CdrInput v-model="country" label="Country" helperTextBottom="Example: India" />
+    <CdrInput v-model="email" label="Admin email" type="email" />
+    <CdrInput v-model="password" label="Password" type="password" />
+
+    <CdrButton :disabled="loading" @click="signup">
+      {{ loading ? "Creating..." : "Create account" }}
+    </CdrButton>
   </div>
 </template>
