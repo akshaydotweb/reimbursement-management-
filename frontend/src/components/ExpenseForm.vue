@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from "vue";
+const emit = defineEmits(["refresh"]);
 import { createExpense } from "../api/api";
 
 const amount = ref("");
@@ -20,6 +21,8 @@ const submitExpense = async () => {
   amount.value = "";
   category.value = "";
   description.value = "";
+
+  emit("refresh");
 };
 </script>
 
