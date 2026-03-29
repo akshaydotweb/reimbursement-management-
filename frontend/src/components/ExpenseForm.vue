@@ -1,37 +1,76 @@
 <script setup>
 import { ref } from "vue";
+import {
+  CdrButton,
+  CdrInput,
+  CdrSelect,
+  CdrBanner,
+  CdrHeadingSans,
+  CdrBody,
+} from "@rei/cedar";
 const emit = defineEmits(["refresh"]);
 import { createExpense } from "../api/api";
 
 const amount = ref("");
+const currency = ref("INR");
 const category = ref("");
 const description = ref("");
+const loading = ref(false);
+const success = ref("");
+const error = ref("");
 
 const submitExpense = async () => {
-  const data = {
-    user_id: 1,
-    amount: Number(amount.value),
-    category: category.value,
-    description: description.value,
-  };
+  loading.value = true;
+  success.value = "";
+  error.value = "";
 
-  const res = await createExpense(data);
-  console.log("Created:", res);
+  try {
+    const data = {
+      amount: Number(amount.value),
+      currency: currency.value,
+      description: description.value,
+      category: category.value,
+    };
 
-  amount.value = "";
-  category.value = "";
-  description.value = "";
+    await createExpense(data);
 
-  emit("refresh");
+    success.value = "Expense submitted.";
+    amount.value = "";
+    category.value = "";
+    description.value = "";
+    currency.value = "INR";
+    emit("refresh");
+  } catch (err) {
+    error.value = "Failed to submit expense.";
+  } finally {
+    loading.value = false;
+  }
 };
 </script>
 
 <template>
-  <div>
-    <h3>Submit Expense</h3>
-    <input v-model="amount" placeholder="Amount" />
-    <input v-model="category" placeholder="Category" />
-    <input v-model="description" placeholder="Description" />
-    <button @click="submitExpense">Submit</button>
+  <div class="surface-card form-stack">
+    <div>
+      <CdrHeadingSans tag="h3" scale="1">Submit Expense</CdrHeadingSans>
+      <CdrBody class="muted">
+        Add expense details and submit for approval.
+      </CdrBody>
+    </div>
+
+    <CdrBanner v-if="success" type="success">{{ success }}</CdrBanner>
+    <CdrBanner v-if="error" type="error">{{ error }}</CdrBanner>
+
+    <CdrInput v-model="amount" label="Amount" type="number" />
+    <CdrSelect v-model="currency" label="Currency">
+      <option value="INR">INR</option>
+      <option value="USD">USD</option>
+      <option value="EUR">EUR</option>
+    </CdrSelect>
+    <CdrInput v-model="category" label="Category" />
+    <CdrInput v-model="description" label="Description" />
+
+    <CdrButton :disabled="loading" @click="submitExpense">
+      {{ loading ? "Submitting..." : "Submit" }}
+    </CdrButton>
   </div>
 </template>

@@ -43,6 +43,11 @@ def login(data:Login,db:Session=Depends(get_db)):
     if not user or not verify_password(data.password,user.password):
         raise HTTPException(400,"Invalid Credentials")
 
-    token=create_token({"id":user.id})
+    token=create_token({
+        "id":user.id,
+        "role":user.role,
+        "email":user.email,
+        "company_id":user.company_id
+    })
 
     return {"access_token":token}

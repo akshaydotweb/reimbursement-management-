@@ -1,14 +1,47 @@
-from fastapi import APIRouter,Depends,UploadFile
+from fastapi import APIRouter,Depends,UploadFile,HTTPException
 from sqlalchemy.orm import Session
+from typing import Optional
 
 from app.dependencies.auth import get_current_user
 from app.core.database import get_db
 from app.models.expense import Expense
+from app.models.user import User
 from app.schemas.expense import ExpenseCreate
 from app.services.approval_engine import generate_approval_flow
 from app.services.ocr_service import extract_receipt
 
 router=APIRouter()
+
+@router.get("/")
+def list_expenses(user_id:Optional[int]=None,
+                  user=Depends(get_current_user),
+                  db:Session=Depends(get_db)):
+
+    base_query=db.query(Expense)\
+        .filter_by(company_id=user.company_id)
+
+    if user.role == "ADMIN":
+        if user_id:
+            return base_query.filter_by(user_id=user_id).all()
+        return base_query.all()
+
+    if user.role == "MANAGER":
+        if user_id:
+            employee=db.query(User)\
+                .filter_by(id=user_id,company_id=user.company_id).first()
+            if not employee or employee.manager_id != user.id:
+                raise HTTPException(status_code=403, detail="Not allowed")
+            return base_query.filter_by(user_id=user_id).all()
+
+        team_ids=[
+            member.id for member in db.query(User)
+            .filter_by(company_id=user.company_id,manager_id=user.id).all()
+        ]
+        if not team_ids:
+            return []
+        return base_query.filter(Expense.user_id.in_(team_ids)).all()
+
+    return base_query.filter_by(user_id=user.id).all()
 
 @router.post("/")
 def create_expense(data:ExpenseCreate,
