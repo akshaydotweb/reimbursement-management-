@@ -79,7 +79,7 @@ onMounted(loadCurrentUser);
           {{ currentUser.email || currentUser.username || currentUser.sub }}
           <span v-if="roleLabel">&nbsp;·&nbsp;{{ roleLabel }}</span>
         </span>
-        <CdrButton variant="secondary" @click="logout">Logout</CdrButton>
+        <CdrButton modifier="secondary" @click="logout">Logout</CdrButton>
       </div>
     </div>
 
@@ -91,7 +91,7 @@ onMounted(loadCurrentUser);
         <CdrButton :style="{ minWidth: '140px' }" @click="page='login'">
           Login
         </CdrButton>
-        <CdrButton variant="secondary" @click="page='signup'">
+        <CdrButton modifier="secondary" @click="page='signup'">
           Signup
         </CdrButton>
       </div>

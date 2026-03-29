@@ -96,7 +96,7 @@ onMounted(load);
                 <CdrButton size="small" @click="approve(item.expense.id)">
                   Approve
                 </CdrButton>
-                <CdrButton size="small" variant="secondary" @click="reject(item.expense.id)">
+                <CdrButton size="small" modifier="secondary" @click="reject(item.expense.id)">
                   Reject
                 </CdrButton>
               </div>
