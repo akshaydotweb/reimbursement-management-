@@ -7,13 +7,17 @@ const page = ref("employee");
 </script>
 
 <template>
-  <div>
+  <div style="padding: 20px; font-family: sans-serif;">
     <h1>Reimbursement System</h1>
 
-    <button @click="page='employee'">Employee</button>
-    <button @click="page='manager'">Manager</button>
+    <div style="margin-bottom: 20px;">
+      <button @click="page='employee'">Employee</button>
+      <button @click="page='manager'">Manager</button>
+    </div>
 
-    <Employee v-if="page==='employee'" />
-    <Manager v-if="page==='manager'" />
+    <div style="border: 1px solid #ccc; padding: 20px;">
+      <Employee v-if="page==='employee'" />
+      <Manager v-if="page==='manager'" />
+    </div>
   </div>
 </template>
