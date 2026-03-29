@@ -21,6 +21,13 @@ def check_approval_completion(expense_id,db):
     approvals=db.query(Approval)\
         .filter_by(expense_id=expense_id).all()
 
+    if any(a.status=="REJECTED" for a in approvals):
+        from app.models.expense import Expense
+        exp=db.query(Expense).get(expense_id)
+        exp.status="REJECTED"
+        db.commit()
+        return
+
     if all(a.status=="APPROVED" for a in approvals):
         from app.models.expense import Expense
         exp=db.query(Expense).get(expense_id)

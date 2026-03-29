@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@rei/cedar": "^16.3.1",
     "vue": "^3.5.30"
   },
   "devDependencies": {
