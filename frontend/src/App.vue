@@ -2,19 +2,22 @@
 import { ref } from "vue";
 import Employee from "./pages/Employee.vue";
 import Manager from "./pages/Manager.vue";
-import Admin from "./pages/Admin.vue";
 
 const page = ref("employee");
 </script>
 
 <template>
-  <div>
-    <button @click="page='employee'">Employee</button>
-    <button @click="page='manager'">Manager</button>
-    <button @click="page='admin'">Admin</button>
+  <div style="padding: 20px; font-family: sans-serif;">
+    <h1>Reimbursement System</h1>
 
-    <Employee v-if="page==='employee'" />
-    <Manager v-if="page==='manager'" />
-    <Admin v-if="page==='admin'" />
+    <div style="margin-bottom: 20px;">
+      <button @click="page='employee'">Employee</button>
+      <button @click="page='manager'">Manager</button>
+    </div>
+
+    <div style="border: 1px solid #ccc; padding: 20px;">
+      <Employee v-if="page==='employee'" />
+      <Manager v-if="page==='manager'" />
+    </div>
   </div>
 </template>

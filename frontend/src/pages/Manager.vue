@@ -4,6 +4,7 @@ import ApprovalList from "../components/ApprovalList.vue";
 
 <template>
   <div>
+    <h2>Manager Dashboard</h2>
     <ApprovalList />
   </div>
 </template>
