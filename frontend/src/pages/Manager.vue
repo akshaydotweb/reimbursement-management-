@@ -1,6 +1,7 @@
 <script setup>
 import { CdrHeadingSans, CdrBody } from "@rei/cedar";
 import ApprovalList from "../components/ApprovalList.vue";
+import TeamExpenseList from "../components/TeamExpenseList.vue";
 </script>
 
 <template>
@@ -11,6 +12,9 @@ import ApprovalList from "../components/ApprovalList.vue";
         Review and act on pending approvals.
       </CdrBody>
     </div>
-    <ApprovalList />
+    <div class="page-grid two-col">
+      <ApprovalList />
+      <TeamExpenseList />
+    </div>
   </div>
 </template>

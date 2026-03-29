@@ -1,6 +1,8 @@
 <script setup>
 import { CdrHeadingSans, CdrBody } from "@rei/cedar";
 import UserForm from "../components/UserForm.vue";
+import AdminApprovalRules from "../components/AdminApprovalRules.vue";
+import AdminExpenseList from "../components/AdminExpenseList.vue";
 </script>
 
 <template>
@@ -11,6 +13,10 @@ import UserForm from "../components/UserForm.vue";
         Manage users, roles, and reporting lines.
       </CdrBody>
     </div>
-    <UserForm />
+    <div class="page-grid two-col">
+      <UserForm />
+      <AdminApprovalRules />
+    </div>
+    <AdminExpenseList />
   </div>
 </template>

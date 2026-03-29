@@ -53,6 +53,7 @@ onMounted(loadExpenses);
             <tr>
               <th>Amount</th>
               <th>Category</th>
+              <th>Date</th>
               <th>Status</th>
             </tr>
           </thead>
@@ -60,6 +61,7 @@ onMounted(loadExpenses);
             <tr v-for="e in expenses" :key="e.id">
               <td>{{ e.currency }} {{ e.amount }}</td>
               <td>{{ e.category }}</td>
+              <td>{{ e.expense_date || "—" }}</td>
               <td>{{ mapStatus(e.status) }}</td>
             </tr>
           </tbody>

@@ -9,3 +9,4 @@ class Approval(Base):
     approver_id=Column(Integer)
     step_order=Column(Integer)
     status=Column(String,default="PENDING")
+    comment=Column(String,nullable=True)

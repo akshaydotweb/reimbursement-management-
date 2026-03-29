@@ -14,4 +14,9 @@ class Expense(Base):
     description=Column(String)
     category=Column(String)
 
+    expense_date=Column(String,nullable=True)
+    paid_by=Column(String,nullable=True)
+    remarks=Column(String,nullable=True)
+    receipt_url=Column(String,nullable=True)
+
     status=Column(String,default="DRAFT")

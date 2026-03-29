@@ -7,6 +7,7 @@ const approvals = ref([]);
 const loading = ref(false);
 const error = ref("");
 const success = ref("");
+const comments = ref({});
 
 const mapStatus = (status) => {
   if (status === "SUBMITTED") return "Pending";
@@ -50,7 +51,7 @@ const reject = async (id) => {
   error.value = "";
 
   try {
-    await rejectExpense(id);
+    await rejectExpense(id, null, comments.value[id] || "");
     success.value = "Expense rejected.";
     load();
   } catch (err) {
@@ -89,16 +90,26 @@ onMounted(load);
           <tr v-for="item in approvals" :key="item.approval.id">
             <td>{{ item.employee?.email || `Employee ${item.expense.user_id}` }}</td>
             <td>{{ item.expense.category }}</td>
-            <td>{{ item.expense.currency }} {{ item.expense.amount }}</td>
+            <td>
+              {{ item.expense_converted?.currency || item.expense.currency }}
+              {{ item.expense_converted?.amount ?? item.expense.amount }}
+            </td>
             <td>{{ mapStatus(item.expense.status) }}</td>
             <td class="align-right">
               <div class="cta-row" style="justify-content: flex-end;">
                 <CdrButton size="small" @click="approve(item.expense.id)">
                   Approve
                 </CdrButton>
-                <CdrButton size="small" variant="secondary" @click="reject(item.expense.id)">
+                <CdrButton size="small" modifier="secondary" @click="reject(item.expense.id)">
                   Reject
                 </CdrButton>
+              </div>
+              <div style="margin-top: 8px;">
+                <input
+                  v-model="comments[item.expense.id]"
+                  type="text"
+                  placeholder="Add comment (optional)"
+                />
               </div>
             </td>
           </tr>

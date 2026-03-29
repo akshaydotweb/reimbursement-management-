@@ -69,6 +69,46 @@ export const getCurrentUser = async () => {
   return res.json();
 };
 
+export const getApprovalRule = async () => {
+  const res = await fetch(`${BASE_URL}/admin/approval-rule`, {
+    headers: getHeaders(),
+  });
+  return res.json();
+};
+
+export const updateApprovalRule = async (data) => {
+  const res = await fetch(`${BASE_URL}/admin/approval-rule`, {
+    method: "PUT",
+    headers: getHeaders(),
+    body: JSON.stringify(data),
+  });
+  return res.json();
+};
+
+export const getApprovalSteps = async () => {
+  const res = await fetch(`${BASE_URL}/admin/approval-steps`, {
+    headers: getHeaders(),
+  });
+  return res.json();
+};
+
+export const updateApprovalSteps = async (steps) => {
+  const res = await fetch(`${BASE_URL}/admin/approval-steps`, {
+    method: "POST",
+    headers: getHeaders(),
+    body: JSON.stringify({ steps }),
+  });
+  return res.json();
+};
+
+export const overrideExpense = async (expenseId, status) => {
+  const res = await fetch(`${BASE_URL}/admin/expenses/${expenseId}/override?status=${status}`, {
+    method: "POST",
+    headers: getHeaders(),
+  });
+  return res.json();
+};
+
 // APPROVALS
 export const approveExpense = async (expenseId) => {
   const res = await fetch(`http://localhost:8000/approvals/${expenseId}`, {
