@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 from app.dependencies.auth import get_current_user
 from app.core.database import get_db
 from app.models.expense import Expense
+from app.models.user import User
 from app.models.rule import ApprovalRule
 from app.models.approval_step import ApprovalStep
 from app.models.approval import Approval
@@ -20,8 +21,16 @@ def all_expenses(user=Depends(get_current_user),
                  db:Session=Depends(get_db)):
 
     _ensure_admin(user)
-    return db.query(Expense)\
-        .filter_by(company_id=user.company_id).all()
+    rows=db.query(Expense,User)\
+        .join(User, User.id==Expense.user_id)\
+        .filter(Expense.company_id==user.company_id).all()
+    return [
+        {
+            **{column.name: getattr(expense, column.name) for column in expense.__table__.columns},
+            "user_email": employee.email
+        }
+        for expense, employee in rows
+    ]
 
 
 @router.get("/approval-rule")

@@ -73,7 +73,7 @@ onMounted(load);
         </thead>
         <tbody>
           <tr v-for="e in expenses" :key="e.id">
-            <td>{{ e.user_id }}</td>
+            <td>{{ e.user_email || e.user_id }}</td>
             <td>{{ e.category }}</td>
             <td>{{ e.currency }} {{ e.amount }}</td>
             <td>{{ mapStatus(e.status) }}</td>

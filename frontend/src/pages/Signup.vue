@@ -53,7 +53,9 @@ const signup = async () => {
     <CdrBanner v-if="error" type="error">{{ error }}</CdrBanner>
 
     <CdrInput v-model="company" label="Company name" />
-    <CdrInput v-model="country" label="Country" helperTextBottom="Example: India" />
+    <CdrInput v-model="country" label="Country">
+      <template #helper-text-bottom>Example: India</template>
+    </CdrInput>
     <CdrInput v-model="email" label="Admin email" type="email" />
     <CdrInput v-model="password" label="Password" type="password" />
 

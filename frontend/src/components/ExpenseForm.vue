@@ -115,7 +115,7 @@ const uploadReceipt = async (event) => {
       <option value="USD">USD</option>
       <option value="EUR">EUR</option>
     </CdrSelect>
-    <CdrInput v-model="expenseDate" label="Expense date" type="text" />
+    <CdrInput v-model="expenseDate" label="Expense date" type="date" />
     <CdrInput v-model="paidBy" label="Paid by" />
     <CdrInput v-model="category" label="Category" />
     <CdrInput v-model="description" label="Description" />

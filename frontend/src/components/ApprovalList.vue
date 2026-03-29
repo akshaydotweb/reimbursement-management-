@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted } from "vue";
-import { CdrTable, CdrBanner, CdrButton, CdrHeadingSans, CdrBody } from "@rei/cedar";
+import { CdrTable, CdrBanner, CdrButton, CdrHeadingSans, CdrBody, CdrInput } from "@rei/cedar";
 import { getPendingApprovals, approveExpense, rejectExpense } from "../api/api";
 
 const approvals = ref([]);
@@ -105,9 +105,10 @@ onMounted(load);
                 </CdrButton>
               </div>
               <div style="margin-top: 8px;">
-                <input
+                <CdrInput
                   v-model="comments[item.expense.id]"
-                  type="text"
+                  label="Comment"
+                  hideLabel
                   placeholder="Add comment (optional)"
                 />
               </div>

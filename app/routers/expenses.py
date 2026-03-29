@@ -15,11 +15,13 @@ from app.services.ocr_service import extract_receipt
 
 router=APIRouter()
 
-def _to_dict(expense, display_currency=None):
+def _to_dict(expense, display_currency=None, user_email=None):
     data = {column.name: getattr(expense, column.name) for column in expense.__table__.columns}
     if display_currency:
         data["display_currency"] = display_currency
         data["display_amount"] = convert_amount(expense.amount, expense.currency, display_currency)
+    if user_email:
+        data["user_email"] = user_email
     return data
 
 @router.get("/")
@@ -34,8 +36,11 @@ def list_expenses(user_id:Optional[int]=None,
 
     if user.role == "ADMIN":
         if user_id:
-            return [_to_dict(e) for e in base_query.filter_by(user_id=user_id).all()]
-        return [_to_dict(e) for e in base_query.all()]
+            rows=base_query.join(User, User.id==Expense.user_id)\
+                .filter(Expense.user_id==user_id).all()
+            return [_to_dict(e, user_email=db.query(User).get(e.user_id).email) for e in rows]
+        rows=base_query.join(User, User.id==Expense.user_id).all()
+        return [_to_dict(e, user_email=db.query(User).get(e.user_id).email) for e in rows]
 
     if user.role == "MANAGER":
         if user_id:
@@ -43,7 +48,9 @@ def list_expenses(user_id:Optional[int]=None,
                 .filter_by(id=user_id,company_id=user.company_id).first()
             if not employee or employee.manager_id != user.id:
                 raise HTTPException(status_code=403, detail="Not allowed")
-            return [_to_dict(e, base_currency) for e in base_query.filter_by(user_id=user_id).all()]
+            rows=base_query.join(User, User.id==Expense.user_id)\
+                .filter(Expense.user_id==user_id).all()
+            return [_to_dict(e, base_currency, user_email=db.query(User).get(e.user_id).email) for e in rows]
 
         team_ids=[
             member.id for member in db.query(User)
@@ -51,7 +58,9 @@ def list_expenses(user_id:Optional[int]=None,
         ]
         if not team_ids:
             return []
-        return [_to_dict(e, base_currency) for e in base_query.filter(Expense.user_id.in_(team_ids)).all()]
+        rows=base_query.join(User, User.id==Expense.user_id)\
+            .filter(Expense.user_id.in_(team_ids)).all()
+        return [_to_dict(e, base_currency, user_email=db.query(User).get(e.user_id).email) for e in rows]
 
     return [_to_dict(e) for e in base_query.filter_by(user_id=user.id).all()]
 
