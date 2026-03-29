@@ -26,6 +26,11 @@ const reject = async (id) => {
   load();
 };
 
+const getStatusStyle = (status) => {
+  if (status === "PENDING") return "color: orange";
+  if (status === "APPROVED") return "color: green";
+  if (status === "REJECTED") return "color: red";
+};
 
 onMounted(load);
 </script>
