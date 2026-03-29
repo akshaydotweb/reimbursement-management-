@@ -1,6 +1,6 @@
 <script setup>
-import { ref } from "vue";
-import { CdrButton, CdrInput, CdrBanner, CdrHeadingSans, CdrBody } from "@rei/cedar";
+import { ref, onMounted } from "vue";
+import { CdrButton, CdrInput, CdrBanner, CdrHeadingSans, CdrBody, CdrSelect } from "@rei/cedar";
 
 const email = ref("");
 const password = ref("");
@@ -9,6 +9,30 @@ const country = ref("");
 const loading = ref(false);
 const success = ref("");
 const error = ref("");
+const countries = ref([]);
+const loadingCountries = ref(false);
+const countryError = ref("");
+
+const loadCountries = async () => {
+  loadingCountries.value = true;
+  countryError.value = "";
+  try {
+    const res = await fetch(
+      "https://restcountries.com/v3.1/all?fields=name,currencies"
+    );
+    const data = await res.json();
+    countries.value = Array.isArray(data)
+      ? data
+          .map((c) => c?.name?.common)
+          .filter(Boolean)
+          .sort((a, b) => a.localeCompare(b))
+      : [];
+  } catch (err) {
+    countryError.value = "Unable to load countries.";
+  } finally {
+    loadingCountries.value = false;
+  }
+};
 
 const signup = async () => {
   loading.value = true;
@@ -38,6 +62,8 @@ const signup = async () => {
 
   loading.value = false;
 };
+
+onMounted(loadCountries);
 </script>
 
 <template>
@@ -53,9 +79,20 @@ const signup = async () => {
     <CdrBanner v-if="error" type="error">{{ error }}</CdrBanner>
 
     <CdrInput v-model="company" label="Company name" />
-    <CdrInput v-model="country" label="Country">
-      <template #helper-text-bottom>Example: India</template>
-    </CdrInput>
+    <div class="form-stack">
+      <CdrBody class="muted">Country</CdrBody>
+      <CdrBanner v-if="countryError" type="error">{{ countryError }}</CdrBanner>
+      <CdrBody v-if="loadingCountries">Loading countries...</CdrBody>
+      <CdrInput v-else-if="countries.length === 0" v-model="country" label="Country" />
+      <CdrSelect
+        v-else
+        v-model="country"
+        label="Country"
+        prompt="Select a country"
+      >
+        <option v-for="c in countries" :key="c" :value="c">{{ c }}</option>
+      </CdrSelect>
+    </div>
     <CdrInput v-model="email" label="Admin email" type="email" />
     <CdrInput v-model="password" label="Password" type="password" />
 
