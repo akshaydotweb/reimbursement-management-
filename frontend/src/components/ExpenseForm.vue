@@ -9,10 +9,10 @@ const description = ref("");
 
 const submitExpense = async () => {
   const data = {
-    user_id: 1,
     amount: Number(amount.value),
-    category: category.value,
+    currency: "INR",
     description: description.value,
+    category: category.value,
   };
 
   const res = await createExpense(data);

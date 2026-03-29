@@ -1,3 +1,23 @@
+<script setup>
+import { ref, onMounted } from "vue";
+import { getAllExpenses } from "../api/api";
+
+const expenses = ref([]);
+
+const loadExpenses = async () => {
+  const data = await getAllExpenses();
+  expenses.value = data;
+};
+
+const getStatusStyle = (status) => {
+  if (status === "SUBMITTED") return "color: orange";
+  if (status === "APPROVED") return "color: green";
+  return "color: gray";
+};
+
+onMounted(loadExpenses);
+</script>
+
 <template>
   <div>
     <h3>My Expenses</h3>
